@@ -52,6 +52,26 @@ namespace XiheFramework.Runtime.Utility.DataStructure {
             }
         }
 
+        public void AddRange(TKey key, IEnumerable<TValue> values) {
+            if (key == null) {
+                Debug.LogError("MultiDictionary key is null");
+                return;
+            }
+
+            if (values == null) {
+                Debug.LogError("MultiDictionary values is null");
+                return;
+            }
+
+            if (m_Dictionary.TryGetValue(key, out var targetList)) {
+                targetList.AddRange(values);
+            }
+            else {
+                var list = new List<TValue>(values);
+                m_Dictionary.Add(key, list);
+            }
+        }
+        
         public void Remove(TKey key, TValue value) {
             if (key == null) {
                 Debug.LogError("MultiDictionary key is null");
