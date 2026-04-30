@@ -18,7 +18,6 @@ using XiheFramework.Runtime.LogicTime;
 using XiheFramework.Runtime.Resource;
 using XiheFramework.Runtime.Scene;
 using XiheFramework.Runtime.UI;
-using XiheFramework.Runtime.Utility.DataStructure;
 
 // using XiheFramework.Core.Serialization;
 
@@ -56,7 +55,10 @@ namespace XiheFramework.Runtime.Base {
         private readonly Dictionary<Type, int> m_AliveGameModuleUpdateTimers = new();
         private readonly Dictionary<Type, int> m_AliveGameModuleFixedUpdateTimers = new();
         private readonly Dictionary<Type, int> m_AliveGameModuleLateUpdateTimers = new();
-        private MultiDictionary<int, Type> m_AliveGameModulePriorityBuckets = new();
+        private readonly Dictionary<Type, int> m_AliveGameModuleRegistrationOrders = new();
+        private readonly List<Type> m_AliveGameModuleExecutionOrder = new();
+        private Type[] m_AliveGameModuleExecutionOrderCache = Array.Empty<Type>();
+        private int m_NextGameModuleRegistrationOrder;
 
         private Transform m_GameModuleRoot;
 
@@ -95,38 +97,50 @@ namespace XiheFramework.Runtime.Base {
         }
 
         private void Update() {
-            foreach (var aliveGameModule in m_AliveGameModules) {
-                if (m_AliveGameModuleUpdateTimers[aliveGameModule.Key] > 0) {
-                    m_AliveGameModuleUpdateTimers[aliveGameModule.Key] -= 1;
+            foreach (var gameModuleType in m_AliveGameModuleExecutionOrderCache) {
+                if (!m_AliveGameModules.TryGetValue(gameModuleType, out var aliveGameModule)) {
                     continue;
                 }
 
-                aliveGameModule.Value.OnUpdateInternal();
-                m_AliveGameModuleUpdateTimers[aliveGameModule.Key] = aliveGameModule.Value.updateInterval;
+                if (m_AliveGameModuleUpdateTimers[gameModuleType] > 0) {
+                    m_AliveGameModuleUpdateTimers[gameModuleType] -= 1;
+                    continue;
+                }
+
+                aliveGameModule.OnUpdateInternal();
+                m_AliveGameModuleUpdateTimers[gameModuleType] = aliveGameModule.updateInterval;
             }
         }
 
         private void FixedUpdate() {
-            foreach (var aliveGameModule in m_AliveGameModules) {
-                if (m_AliveGameModuleFixedUpdateTimers[aliveGameModule.Key] > 0) {
-                    m_AliveGameModuleFixedUpdateTimers[aliveGameModule.Key] -= 1;
+            foreach (var gameModuleType in m_AliveGameModuleExecutionOrderCache) {
+                if (!m_AliveGameModules.TryGetValue(gameModuleType, out var aliveGameModule)) {
                     continue;
                 }
 
-                aliveGameModule.Value.OnFixedUpdateInternal();
-                m_AliveGameModuleFixedUpdateTimers[aliveGameModule.Key] = aliveGameModule.Value.fixedUpdateInterval;
+                if (m_AliveGameModuleFixedUpdateTimers[gameModuleType] > 0) {
+                    m_AliveGameModuleFixedUpdateTimers[gameModuleType] -= 1;
+                    continue;
+                }
+
+                aliveGameModule.OnFixedUpdateInternal();
+                m_AliveGameModuleFixedUpdateTimers[gameModuleType] = aliveGameModule.fixedUpdateInterval;
             }
         }
 
         private void LateUpdate() {
-            foreach (var aliveGameModule in m_AliveGameModules) {
-                if (m_AliveGameModuleLateUpdateTimers[aliveGameModule.Key] > 0) {
-                    m_AliveGameModuleLateUpdateTimers[aliveGameModule.Key] -= 1;
+            foreach (var gameModuleType in m_AliveGameModuleExecutionOrderCache) {
+                if (!m_AliveGameModules.TryGetValue(gameModuleType, out var aliveGameModule)) {
                     continue;
                 }
 
-                aliveGameModule.Value.OnLateUpdateInternal();
-                m_AliveGameModuleLateUpdateTimers[aliveGameModule.Key] = aliveGameModule.Value.lateUpdateInterval;
+                if (m_AliveGameModuleLateUpdateTimers[gameModuleType] > 0) {
+                    m_AliveGameModuleLateUpdateTimers[gameModuleType] -= 1;
+                    continue;
+                }
+
+                aliveGameModule.OnLateUpdateInternal();
+                m_AliveGameModuleLateUpdateTimers[gameModuleType] = aliveGameModule.lateUpdateInterval;
             }
 
             //register game modules
@@ -159,21 +173,13 @@ namespace XiheFramework.Runtime.Base {
                 return;
             }
 
-            Instance.m_AliveGameModules[gameModuleType] = gameModule;
+            Instance.RegisterAliveGameModule(gameModuleType, gameModule);
             try {
                 gameModule.OnInstantiatedInternal(onInstantiated);
             }
             catch (Exception e) {
                 System.Console.WriteLine(e);
             }
-
-            //timer
-            Instance.m_AliveGameModuleUpdateTimers[gameModuleType] = gameModule.updateInterval;
-            Instance.m_AliveGameModuleFixedUpdateTimers[gameModuleType] = gameModule.fixedUpdateInterval;
-            Instance.m_AliveGameModuleLateUpdateTimers[gameModuleType] = gameModule.lateUpdateInterval;
-
-            Instance.m_AliveGameModules[gameModule.GetType()] = gameModule;
-            Instance.m_AliveGameModulePriorityBuckets.Add(gameModule.Priority, gameModule.GetType());
         }
 
         public static void InstantiatePresetGameModule<T>(Action onInstantiated = null) where T : GameModuleBase {
@@ -225,9 +231,21 @@ namespace XiheFramework.Runtime.Base {
         }
 
         public static void DestroyFramework() {
-            foreach (var component in Instance.m_AliveGameModules.Values) component.OnDestroyedInternal();
+            foreach (var gameModuleType in Instance.m_AliveGameModuleExecutionOrderCache) {
+                if (Instance.m_AliveGameModules.TryGetValue(gameModuleType, out var component)) {
+                    component.OnDestroyedInternal();
+                }
+            }
+
             Instance.m_AliveGameModules.Clear();
             Instance.m_RegisterGameModulesQueue.Clear();
+            Instance.m_AliveGameModuleUpdateTimers.Clear();
+            Instance.m_AliveGameModuleFixedUpdateTimers.Clear();
+            Instance.m_AliveGameModuleLateUpdateTimers.Clear();
+            Instance.m_AliveGameModuleRegistrationOrders.Clear();
+            Instance.m_AliveGameModuleExecutionOrder.Clear();
+            Instance.m_AliveGameModuleExecutionOrderCache = Array.Empty<Type>();
+            Instance.m_NextGameModuleRegistrationOrder = 0;
         }
 
         public static string GameName => Instance.gameName;
@@ -237,9 +255,7 @@ namespace XiheFramework.Runtime.Base {
         #region Private Methods
 
         private void InstantiateCoreGameModules() {
-            var tempDic = m_PresetGameModules.OrderBy(x => x.Value.Priority).ToDictionary(x => x.Key, x => x.Value);
-
-            foreach (var gameModule in tempDic) {
+            foreach (var gameModule in m_PresetGameModules.OrderBy(x => x.Value.Priority)) {
                 InstantiatePresetGameModule(gameModule.Key);
                 // Debug.Log($"[GAME MANAGER] GameModule: {gameModule.Key.Name} instantiated");
             }
@@ -248,20 +264,39 @@ namespace XiheFramework.Runtime.Base {
         private void ProcessGameModuleRegistrationQueue() {
             while (m_RegisterGameModulesQueue.Count > 0) {
                 var registrationInfo = m_RegisterGameModulesQueue.Dequeue();
+                RegisterAliveGameModule(registrationInfo.gameModuleType, registrationInfo.gameModule);
                 registrationInfo.gameModule.OnInstantiatedInternal(registrationInfo.onInstantiated);
-                //timer
-                Instance.m_AliveGameModuleUpdateTimers[registrationInfo.gameModuleType] = registrationInfo.gameModule.updateInterval;
-                Instance.m_AliveGameModuleFixedUpdateTimers[registrationInfo.gameModuleType] = registrationInfo.gameModule.fixedUpdateInterval;
-                Instance.m_AliveGameModuleLateUpdateTimers[registrationInfo.gameModuleType] = registrationInfo.gameModule.lateUpdateInterval;
+            }
+        }
 
-                Instance.m_AliveGameModules[registrationInfo.gameModuleType] = registrationInfo.gameModule;
-                Instance.m_AliveGameModulePriorityBuckets.Add(registrationInfo.gameModule.Priority, registrationInfo.gameModule.GetType());
+        private void RegisterAliveGameModule(Type gameModuleType, GameModuleBase gameModule) {
+            m_AliveGameModules[gameModuleType] = gameModule;
+            m_AliveGameModuleUpdateTimers[gameModuleType] = gameModule.updateInterval;
+            m_AliveGameModuleFixedUpdateTimers[gameModuleType] = gameModule.fixedUpdateInterval;
+            m_AliveGameModuleLateUpdateTimers[gameModuleType] = gameModule.lateUpdateInterval;
+
+            if (!m_AliveGameModuleRegistrationOrders.ContainsKey(gameModuleType)) {
+                m_AliveGameModuleRegistrationOrders[gameModuleType] = m_NextGameModuleRegistrationOrder;
+                m_NextGameModuleRegistrationOrder += 1;
             }
 
-            //sort by priority
-            m_AliveGameModulePriorityBuckets = m_AliveGameModulePriorityBuckets
-                .OrderBy(x => x.Key)
-                .ToDictionary(x => x.Key, x => x.Value);
+            if (!m_AliveGameModuleExecutionOrder.Contains(gameModuleType)) {
+                m_AliveGameModuleExecutionOrder.Add(gameModuleType);
+            }
+
+            SortAliveGameModulesByPriority();
+        }
+
+        private void SortAliveGameModulesByPriority() {
+            m_AliveGameModuleExecutionOrder.Sort((left, right) => {
+                var priorityComparison = m_AliveGameModules[left].Priority.CompareTo(m_AliveGameModules[right].Priority);
+                if (priorityComparison != 0) {
+                    return priorityComparison;
+                }
+
+                return m_AliveGameModuleRegistrationOrders[left].CompareTo(m_AliveGameModuleRegistrationOrders[right]);
+            });
+            m_AliveGameModuleExecutionOrderCache = m_AliveGameModuleExecutionOrder.ToArray();
         }
 
         #endregion
