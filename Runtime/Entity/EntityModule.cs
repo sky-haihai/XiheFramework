@@ -97,7 +97,10 @@ namespace XiheFramework.Runtime.Entity {
                 return;
             }
 
-            entityBase.gameObject.name += "(Scene)";
+            if (!entityBase.gameObject.name.EndsWith("(Scene)", StringComparison.Ordinal)) {
+                entityBase.gameObject.name += "(Scene)";
+            }
+
             lock (m_LockRoot) SetUpGameEntity(entityBase, entityBase.EntityAddress, presetId);
         }
 
@@ -120,6 +123,8 @@ namespace XiheFramework.Runtime.Entity {
                 Game.Event.InvokeNow(EntityModuleEvents.OnEntityDestroyedEventName, args);
                 m_Entities.Remove(entityId);
                 m_RecycledEntityIds.Remove(entityId); // release recycled id if exist
+                entity.EntityId = 0;
+                entity.OwnerId = 0;
             }
         }
 
