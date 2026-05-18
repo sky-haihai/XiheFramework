@@ -10,15 +10,16 @@ namespace XiheFramework.Runtime.FSM {
 
         private readonly Dictionary<string, StateMachine> m_StateMachines = new();
 
-        private Queue<string> m_RemoveQueue = new();
+        private HashSet<string> m_PendingRemoveStateMachines = new();
         private bool m_IsActive = true;
 
         protected override void OnUpdate() {
             if (!m_IsActive) return;
 
-            while (m_RemoveQueue.Count > 0) {
-                var fsmName = m_RemoveQueue.Dequeue();
+            var pendingRemoveStateMachines = m_PendingRemoveStateMachines.ToArray();
+            foreach (var fsmName in pendingRemoveStateMachines) {
                 m_StateMachines.Remove(fsmName);
+                m_PendingRemoveStateMachines.Remove(fsmName);
             }
 
             var keys = m_StateMachines.Keys.ToArray();
@@ -82,7 +83,7 @@ namespace XiheFramework.Runtime.FSM {
         }
 
         public bool IsFsmExisted(string fsmName) {
-            return m_StateMachines.ContainsKey(fsmName);
+            return m_StateMachines.ContainsKey(fsmName) && !m_PendingRemoveStateMachines.Contains(fsmName);
         }
 
         public StateMachine CreateStateMachine(string fsmName) {
@@ -95,16 +96,19 @@ namespace XiheFramework.Runtime.FSM {
                 m_StateMachines.Add(fsmName, fsm);
             }
 
+            m_PendingRemoveStateMachines.Remove(fsmName);
             return fsm;
         }
 
         public void RemoveStateMachine(string fsmName) {
+            if (!IsFsmExisted(fsmName)) {
+                Debug.LogWarningFormat("[FSM] Can not remove fsm with name: {0} because it does not exist", fsmName);
+                return;
+            }
+
             if (m_StateMachines.TryGetValue(fsmName, out var stateMachine)) {
                 stateMachine.OnExit();
-                m_RemoveQueue.Enqueue(fsmName);
-            }
-            else {
-                Debug.LogWarningFormat("[FSM] Can not remove fsm with name: {0} because it does not exist", fsmName);
+                m_PendingRemoveStateMachines.Add(fsmName);
             }
         }
 
@@ -154,7 +158,7 @@ namespace XiheFramework.Runtime.FSM {
         protected override void OnDestroyed() {
             base.OnDestroyed();
             m_StateMachines.Clear();
-            m_RemoveQueue.Clear();
+            m_PendingRemoveStateMachines.Clear();
         }
     }
 }
