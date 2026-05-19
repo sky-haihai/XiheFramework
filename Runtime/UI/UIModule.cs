@@ -283,8 +283,6 @@ namespace XiheFramework.Runtime.UI {
             go.AddComponent<GraphicRaycaster>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = sortingOrder;
-            canvas.renderMode = RenderMode.ScreenSpaceCamera;
-            canvas.worldCamera = Camera.main;
             canvas.planeDistance = 1f;
             canvas.pixelPerfect = true;
 
