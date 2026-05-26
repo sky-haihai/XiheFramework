@@ -7,66 +7,34 @@ The current design favors clear framework boundaries over broad static convenien
 ## Architecture
 
 ```mermaid
-flowchart TD
-    Game["Project Code / Game Assemblies"]
-    GM["GameManager"]
-    Core["XiheFramework.Core<br/>Runtime/Foundation<br/>Game, GameManager, GameModuleBase,<br/>module registry, startup, debug"]
-    Util["XiheFramework.Utilities"]
+flowchart TB
+    User["User Game Code"]
+    Game["Game<br/>GetModule&lt;T&gt;() / TryGetModule&lt;T&gt;()"]
 
-    Event["Modules.Event<br/>IXiheEventModule / XiheEventModule"]
-    Blackboard["Modules.Blackboard<br/>IXiheBlackboardModule / XiheBlackboardModule"]
-    LogicTime["Modules.LogicTime<br/>IXiheLogicTimeModule / XiheLogicTimeModule"]
-    Resource["Modules.Resource<br/>IXiheResourceModule / XiheResourceModule"]
-    Scene["Modules.Scene<br/>IXiheSceneModule / XiheSceneModule"]
-    Entity["Modules.Entity<br/>IXiheEntityModule / XiheEntityModule"]
-    UI["Modules.UI<br/>IXiheUIModule / XiheUIModule"]
-    Fsm["Modules.Fsm<br/>IXiheStateMachineModule / XiheStateMachineModule"]
-    Serialization["Modules.Serialization<br/>IXiheSerializationModule / XiheSerializationModuleBase"]
+    subgraph Core["Core Modules"]
+        direction LR
+        Event["Event"]
+        Blackboard["Blackboard"]
+        LogicTime["LogicTime"]
+        Resource["Resource"]
+        Scene["Scene"]
+        Entity["Entity"]
+        UI["UI"]
+        Fsm["Fsm"]
+        Serialization["Serialization"]
+    end
 
-    Custom["Project Custom Modules<br/>prefabs assigned in GameManager"]
-    Audio["Custom.Audio<br/>XiheAudioModuleBase"]
-    UnityAudio["Custom.Audio.Unity<br/>XiheUnityAudioModule"]
-    Wwise["Custom.Audio.Wwise<br/>XiheWwiseAudioModule"]
-    Input["Custom.Input.Legacy<br/>XiheInputModule"]
+    Custom["Custom Modules<br/>project enabled"]
+    Foundation["Foundation<br/>GameModuleBase / registry / lifecycle"]
 
-    Game --> GM
-    GM --> Core
-    GM --> Event
-    GM --> Blackboard
-    GM --> LogicTime
-    GM --> Resource
-    GM --> Scene
-    GM --> Entity
-    GM --> UI
-    GM --> Fsm
-    GM --> Custom
-
-    Util --> Core
-    Event --> Core
-    Blackboard --> Core
-    LogicTime --> Core
-    Resource --> Core
-    Scene --> Core
-    Entity --> Core
-    UI --> Core
-    Fsm --> Core
-    Serialization --> Core
-
-    LogicTime --> Event
-    Entity --> Event
-    Entity --> LogicTime
-    Entity --> Resource
-    UI --> Entity
-    Fsm --> Event
-    Serialization --> Event
-
-    UnityAudio --> Audio
-    Wwise --> Audio
-    Audio --> Core
-    Input --> Core
+    User --> Game
+    Game --> Core
+    Game --> Custom
+    Core --> Foundation
+    Custom --> Foundation
 ```
 
-The active assembly graph is intentionally one-way. `XiheFramework.Core` is the foundation assembly and does not reference feature module implementations. Feature modules reference the foundation assembly and, only when needed, lower-level module interfaces or events.
+This diagram is a learning map, not the full asmdef dependency graph. User code enters through `Game`, retrieves core or custom modules with `Game.GetModule<T>()`, and does not need to depend on module startup internals.
 
 ## Folder Layout
 
