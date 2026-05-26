@@ -23,150 +23,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1395453113888548290}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 3912756209131152255}
-  m_Father: {fileID: 3029905992562841780}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2941507490360414615
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3912756209131152255}
-  - component: {fileID: 1996374185052268726}
-  - component: {fileID: 3128071353771443931}
-  - component: {fileID: 1029567490840920586}
-  - component: {fileID: 160667830733174029}
-  m_Layer: 0
-  m_Name: Camera
-  m_TagString: MainCamera
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3912756209131152255
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2941507490360414615}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2628760661543890562}
-  m_RootOrder: 0
+  m_Father: {fileID: 3029905992562841780}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!20 &1996374185052268726
-Camera:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2941507490360414615}
-  m_Enabled: 1
-  serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
-  m_projectionMatrixMode: 1
-  m_GateFitMode: 2
-  m_FOVAxisMode: 0
-  m_SensorSize: {x: 36, y: 24}
-  m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
-  m_NormalizedViewPortRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60
-  orthographic: 0
-  orthographic size: 5
-  m_Depth: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
-  m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
-  m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
---- !u!81 &3128071353771443931
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2941507490360414615}
-  m_Enabled: 1
---- !u!114 &1029567490840920586
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2941507490360414615}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EventMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_MaxRayIntersections: 0
---- !u!114 &160667830733174029
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2941507490360414615}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RenderShadows: 1
-  m_RequiresDepthTextureOption: 2
-  m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
-  m_Cameras: []
-  m_RendererIndex: -1
-  m_VolumeLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  m_VolumeTrigger: {fileID: 0}
-  m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 1
-  m_Antialiasing: 0
-  m_AntialiasingQuality: 2
-  m_StopNaN: 0
-  m_Dithering: 0
-  m_ClearDepth: 1
-  m_AllowXRRendering: 1
-  m_RequiresDepthTexture: 0
-  m_RequiresColorTexture: 0
-  m_Version: 2
 --- !u!1 &3029905992562841782
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,6 +55,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3029905992562841782}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -199,7 +64,6 @@ Transform:
   - {fileID: 7861337408735936695}
   - {fileID: 2628760661543890562}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3029905992562841783
 MonoBehaviour:
@@ -213,30 +77,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54b3b68afea16454883d51e18619abf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameName: My Game
-  audioModule: {fileID: 3116445981691434761, guid: 496bf18c35a16054b8346b865b45a4b7,
-    type: 3}
-  blackboardModule: {fileID: 7563566627055990113, guid: b4054472333cfdd43aa5994ad45cd6e1,
-    type: 3}
-  configModule: {fileID: -5127166738006237271, guid: a521d3ef78af5274492b4d3f9a7748a1,
-    type: 3}
-  consoleModule: {fileID: 2985751042860444812, guid: f412c1be6d7d5aa42bfa311c99296f6a,
-    type: 3}
-  entityModule: {fileID: 6073365392024866621, guid: 2fad7c011085d2844b11ea7efff19da3,
-    type: 3}
-  eventModule: {fileID: 4929048176556936669, guid: 82f8e845c2a29bc4498577eafb42a207,
-    type: 3}
-  fsmModule: {fileID: 1966528819442357449, guid: d3107ce2d74aeae49ab3deca41065ea2,
-    type: 3}
-  logicTimeModule: {fileID: 6706050416166794287, guid: a8247f21a80f3844da27defd2c37ab6d,
-    type: 3}
-  resourceModule: {fileID: 5465151087903902281, guid: e06451c2a77a3c94ba954f6370dfd656,
-    type: 3}
-  sceneModule: {fileID: 6712906138039977373, guid: e83d7fa475fffa14895abb505021da17,
-    type: 3}
-  uiModule: {fileID: 1268650218820752308, guid: 77278f1c9c2ecda4d8dc0aaeafafdeec,
-    type: 3}
-  customGameModules: []
+  m_GameName: My Game
+  m_AutoCreateCoreModules: 1
+  m_CoreModules:
+  - enabled: 1
+    contractTypeName: XiheFramework.Runtime.Blackboard.IXiheBlackboardModule, XiheFramework.Modules.Blackboard,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    implementationTypeName: XiheFramework.Runtime.Blackboard.XiheBlackboardModule,
+      XiheFramework.Modules.Blackboard, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - enabled: 1
+    contractTypeName: XiheFramework.Runtime.Entity.IXiheEntityModule, XiheFramework.Modules.Entity,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    implementationTypeName: XiheFramework.Runtime.Entity.XiheEntityModule, XiheFramework.Modules.Entity,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - enabled: 1
+    contractTypeName: XiheFramework.Runtime.LogicTime.IXiheLogicTimeModule, XiheFramework.Modules.LogicTime,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    implementationTypeName: XiheFramework.Runtime.LogicTime.XiheLogicTimeModule,
+      XiheFramework.Modules.LogicTime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - enabled: 1
+    contractTypeName: XiheFramework.Runtime.Resource.IXiheResourceModule, XiheFramework.Modules.Resource,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    implementationTypeName: XiheFramework.Runtime.Resource.XiheResourceModule, XiheFramework.Modules.Resource,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - enabled: 1
+    contractTypeName: XiheFramework.Runtime.Scene.IXiheSceneModule, XiheFramework.Modules.Scene,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    implementationTypeName: XiheFramework.Runtime.Scene.XiheSceneModule, XiheFramework.Modules.Scene,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - enabled: 1
+    contractTypeName: XiheFramework.Runtime.FSM.IXiheStateMachineModule, XiheFramework.Modules.Fsm,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    implementationTypeName: XiheFramework.Runtime.FSM.XiheStateMachineModule, XiheFramework.Modules.Fsm,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - enabled: 1
+    contractTypeName: XiheFramework.Runtime.UI.IXiheUIModule, XiheFramework.Modules.UI,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    implementationTypeName: XiheFramework.Runtime.UI.XiheUIModule, XiheFramework.Modules.UI,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - enabled: 1
+    contractTypeName: XiheFramework.Runtime.Event.IXiheEventModule, XiheFramework.Modules.Event,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    implementationTypeName: XiheFramework.Runtime.Event.XiheEventModule, XiheFramework.Modules.Event,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_CustomGameModulePrefabs:
+  - {fileID: 3116445981691434761, guid: 496bf18c35a16054b8346b865b45a4b7, type: 3}
+  m_EnableFrameworkDebug: 0
 --- !u!1 &5452149060114569929
 GameObject:
   m_ObjectHideFlags: 0
@@ -260,11 +146,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5452149060114569929}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3029905992562841780}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

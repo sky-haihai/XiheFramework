@@ -1,0 +1,17 @@
+{
+    "name": "XiheFramework.Custom.Audio.Unity",
+    "rootNamespace": "",
+    "references": [
+        "XiheFramework.Core",
+        "XiheFramework.Custom.Audio"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
