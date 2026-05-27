@@ -65,7 +65,6 @@ Assets/XiheFramework
     Tools
   Archive~
   Samples~
-  Tests
 ```
 
 `Archive~` contains retired modules and legacy utilities. Unity ignores folders ending with `~`, so archived code is kept for reference but is not part of active compilation.
@@ -87,9 +86,9 @@ Assembly rules:
 
 ## Core Modules
 
-Core modules are the default framework capabilities that `GameManager` can create at runtime.
+Core modules are the default framework capability contracts. Concrete implementations marked with `XiheCoreModuleAttribute` can be created by `GameManager` at runtime.
 
-| Module | Interface | Default Implementation | Notes |
+| Module | Interface | Built-in Implementation | Notes |
 | --- | --- | --- | --- |
 | Event | `IXiheEventModule` | `XiheEventModule` | String event bus using `EventHandler<object>`. |
 | Blackboard | `IXiheBlackboardModule` | `XiheBlackboardModule` | Shared runtime blackboards. |
@@ -99,7 +98,9 @@ Core modules are the default framework capabilities that `GameManager` can creat
 | Entity | `IXiheEntityModule` | `XiheEntityModule` | Entity registration, lifecycle, pooling-facing APIs, and entity events. |
 | UI | `IXiheUIModule` | `XiheUIModule` | Page, pop, overlay, and UI entity orchestration. |
 | Fsm | `IXiheStateMachineModule` | `XiheStateMachineModule` | State machine registration and update. |
-| Serialization | `IXiheSerializationModule` | `XiheSerializationModuleBase` | Base contracts and serialization helpers; projects provide concrete persistence when needed. |
+| Serialization | `IXiheSerializationModule` | `XiheSerializationModuleBase` | Abstract base only; projects provide a concrete persistence module when needed. |
+
+Serialization currently provides the contract and base class but no built-in concrete module. It will not appear in the `GameManager` core module dropdown until the project or framework adds a non-abstract implementation marked with `[XiheCoreModule(typeof(IXiheSerializationModule))]`.
 
 Each concrete core implementation that should appear in `GameManager` is marked with:
 
@@ -131,7 +132,7 @@ Important inspector fields:
 - `Core Modules`: one row per core module contract; choose the implementation class from the dropdown.
 - `Custom Game Module Prefabs`: explicit prefab list for non-core modules, including project modules and framework custom modules.
 
-Core modules are created directly from the selected implementation types at runtime. They do not use active prefabs. Historical core module prefabs are archived under `Archive~/CoreModulePrefabs` for reference only.
+Selected concrete core modules are created directly from implementation types at runtime. They do not use active prefabs. Historical core module prefabs are archived under `Archive~/CoreModulePrefabs` for reference only.
 
 Custom modules are still prefab-based because they are project-specific or explicitly enabled per project.
 
@@ -190,9 +191,9 @@ Custom modules are non-core modules that are explicitly enabled by adding prefab
 
 Current framework-provided custom module candidates:
 
-- `XiheUnityAudioModule`
-- `XiheWwiseAudioModule`
-- `XiheInputModule`
+- `XiheUnityAudioModule`, with an included prefab.
+- `XiheWwiseAudioModule`, with an included prefab; Wwise-specific API calls require `USE_WWISE`.
+- `XiheInputModule`, class-only; create a project prefab if the project uses the legacy input module.
 
 Project custom modules should follow the same base pattern:
 
@@ -206,15 +207,17 @@ Add the component to a prefab, then assign that prefab to `GameManager`. If othe
 
 ## Resource And Scene Loading
 
-`XiheResourceModule` and `XiheSceneModule` are designed around Addressables.
+`XiheResourceModule`, `XiheSceneModule`, and the Addressable editor tools are designed around Unity Addressables.
 
 Project rules:
 
-- Import Unity Addressables before enabling `USE_ADDRESSABLE`.
-- Enable `USE_ADDRESSABLE` through `XiheFramework/Setup Wizard`.
+- Import Unity Addressables before enabling `USE_ADDRESSABLE` through `XiheFramework/Setup Wizard`.
+- Put dynamically loaded assets under `Assets/AddressableResources`.
+- Use `XiheFramework/Resource/Mark All Addressable` after adding or moving assets so the project has stable generated address constants.
 - Runtime resource loading should go through `Game.GetModule<IXiheResourceModule>()`.
 - Scene loading should go through `Game.GetModule<IXiheSceneModule>()`.
 - Higher-level modules such as Entity and UI should use their module APIs instead of bypassing directly to Addressables.
+- Runtime code should use generated `GameConstant.ResourceAddresses` values instead of handwritten address strings.
 
 ## Setup Wizard
 
@@ -224,15 +227,15 @@ Open the wizard from:
 XiheFramework/Setup Wizard
 ```
 
-The wizard edits Scripting Define Symbols for the active build target. Import third-party packages first, then enable the matching symbol.
+The wizard edits Scripting Define Symbols for the active build target. All third-party package symbols are optional: import the package first, then enable only the matching symbol. Do not enable a symbol for a package that is not installed in the project.
 
-| Symbol | Used By Active Framework | When To Enable |
+| Symbol | Optional Package | When To Enable |
 | --- | --- | --- |
-| `USE_ADDRESSABLE` | Yes | Enable after importing Unity Addressables. Required for active resource and scene loading implementations. |
-| `USE_WWISE` | Yes | Enable after importing Wwise. Required for Wwise-specific audio calls. |
-| `USE_REWIRED` | Reserved | Enable only when the project or a Rewired adapter assembly uses it. |
-| `USE_CINEMACHINE` | Reserved | Enable only when project code or future framework adapters use Cinemachine APIs. |
-| `USE_TMP` | Reserved | Enable only when project UI code or adapters use TextMeshPro APIs. |
+| `USE_ADDRESSABLE` | Unity Addressables | Enable after importing Addressables when the project uses runtime resource or scene loading through Xihe modules. |
+| `USE_WWISE` | Wwise | Enable after importing Wwise when Wwise custom audio modules or project code call Wwise APIs. |
+| `USE_REWIRED` | Rewired | Enable after importing Rewired when a project adapter assembly uses Rewired APIs. |
+| `USE_CINEMACHINE` | Cinemachine | Enable after importing Cinemachine when project code or adapters use Cinemachine APIs. |
+| `USE_TMP` | TextMeshPro | Enable after importing TextMeshPro when project UI code or adapters use TMP APIs. |
 
 The wizard also has `Create Game Folders`, which creates:
 
@@ -257,7 +260,7 @@ XiheFramework/Resource/Mark All Addressable
 
 `Create Addressable Folder` creates `Assets/AddressableResources`.
 
-`Mark All Addressable` requires Unity Addressables and `USE_ADDRESSABLE`. It scans `Assets/AddressableResources`, creates or updates Addressables groups, assigns stable addresses, and generates:
+`Mark All Addressable` requires Unity Addressables and `USE_ADDRESSABLE`. Use it whenever assets are added to or moved inside `Assets/AddressableResources`. It scans the folder, creates or updates Addressables groups, assigns stable addresses, and generates:
 
 ```text
 Assets/Scripts/GameConstant/ResourceAddresses.cs
@@ -301,14 +304,15 @@ For each project using XiheFramework:
 
 1. Keep `Assets/XiheFramework` as framework code. Put project gameplay code under `Assets/Scripts` or another project-owned folder.
 2. Create project `.asmdef` files and reference only the Xihe assemblies that are actually needed.
-3. Import required third-party packages.
-4. Open `XiheFramework/Setup Wizard` and enable only the symbols that match installed packages.
-5. Place one `GameManager` in the boot scene.
-6. Keep `Auto Create Core Modules` enabled unless the project has a specific bootstrap reason not to.
-7. Choose core module implementations from the `GameManager` dropdowns.
-8. Add custom module prefabs to `Custom Game Module Prefabs`.
-9. Access modules through `Game.GetModule<T>()` or `Game.TryGetModule<T>()`.
-10. Keep project typed facades in project assemblies, not in `XiheFramework.Core`.
+3. Import only the third-party packages the project actually uses.
+4. Open `XiheFramework/Setup Wizard` and enable only the symbols for packages already installed in this project.
+5. If the project uses Addressables, put runtime assets under `Assets/AddressableResources`, then run `XiheFramework/Resource/Mark All Addressable`.
+6. Place one `GameManager` in the boot scene.
+7. Keep `Auto Create Core Modules` enabled unless the project has a specific bootstrap reason not to.
+8. Choose core module implementations from the `GameManager` dropdowns.
+9. Add custom module prefabs to `Custom Game Module Prefabs`.
+10. Access modules through `Game.GetModule<T>()` or `Game.TryGetModule<T>()`.
+11. Keep project typed facades in project assemblies, not in `XiheFramework.Core`.
 
 ## Naming Conventions
 
