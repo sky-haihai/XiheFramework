@@ -4,6 +4,28 @@ XiheFramework is a modular Unity runtime framework. It is built around a small f
 
 The current design favors clear framework boundaries over broad static convenience APIs. Projects should depend on module interfaces such as `IXiheEventModule` and `IXiheEntityModule`, then choose concrete implementations from `GameManager`.
 
+## Add to Unity Project
+
+### 1. Add As Submodule
+
+Execute the following Powershell command at the root of your Unity project folder:
+
+```powershell
+git submodule add https://github.com/sky-haihai/XiheFramework.git Assets/XiheFramework
+```
+
+### 2. Direct Clone
+
+Execute the following Powershell command at your Assets folder:
+
+```powershell
+git clone https://github.com/sky-haihai/XiheFramework.git
+```
+
+### 3. Download ZIP
+
+Download ZIP from [sky-haihai/XiheFramework.git](https://github.com/sky-haihai/XiheFramework.git), and unzip everything under `.../Assets`.
+
 ## Architecture
 
 ```mermaid
