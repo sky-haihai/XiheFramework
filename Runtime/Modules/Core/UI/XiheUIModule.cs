@@ -26,7 +26,7 @@ namespace XiheFramework.Runtime.UI {
         public UILayoutEntityBase[] CurrentPops => m_PopEntities.Values.ToArray();
         public UILayoutEntityBase[] CurrentOverlays => m_OverlayEntities.Values.ToArray();
 
-        private static IXiheEntityModule XiheEntity => Game.GetModule<IXiheEntityModule>();
+        private static IXiheEntityModule XiheEntity => GameManager.GetModule<IXiheEntityModule>();
 
         /// <summary>
         /// Open new UIPageEntity in Page Layer

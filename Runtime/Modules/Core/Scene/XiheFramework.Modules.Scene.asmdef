@@ -3,6 +3,7 @@
     "rootNamespace": "",
     "references": [
         "XiheFramework.Core",
+        "XiheFramework.Modules.Scene.Contracts",
         "Unity.Addressables",
         "Unity.ResourceManager"
     ],

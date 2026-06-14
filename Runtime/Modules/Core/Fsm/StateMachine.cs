@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using XiheFramework.Runtime.Base;
 using static System.String;
 
 namespace XiheFramework.Runtime.FSM {
@@ -69,7 +70,7 @@ namespace XiheFramework.Runtime.FSM {
             m_UpdateToExit = true;
             m_PreviousState = CurrentState;
             m_NextState = targetState;
-            if (Game.GetModule<XiheStateMachineModule>().enableDebug) Debug.Log("Change to " + targetState);
+            if (GameManager.GetModule<XiheStateMachineModule>().enableDebug) Debug.Log("Change to " + targetState);
         }
 
         #region Life Cycle
@@ -80,11 +81,11 @@ namespace XiheFramework.Runtime.FSM {
             }
 
             if (!m_States.ContainsKey(m_InitialState)) {
-                Game.LogError("[FSM] Initial state " + m_InitialState + " does not exist");
+                Debug.LogError("[FSM] Initial state " + m_InitialState + " does not exist");
             }
 
             if (m_InitialState == null) {
-                Game.LogWarning("[FSM] Initial state is null");
+                Debug.LogWarning("[FSM] Initial state is null");
             }
 
             CurrentState = m_InitialState;
@@ -108,7 +109,7 @@ namespace XiheFramework.Runtime.FSM {
             if (m_UpdateToExit) {
                 m_States[CurrentState].OnExitInternal();
                 if (m_NextState == "") {
-                    Game.LogWarning("[FSM] Next state is null or empty");
+                    Debug.LogWarning("[FSM] Next state is null or empty");
                 }
 
                 CurrentState = m_NextState;

@@ -2,7 +2,8 @@
     "name": "XiheFramework.Modules.Blackboard",
     "rootNamespace": "",
     "references": [
-        "XiheFramework.Core"
+        "XiheFramework.Core",
+        "XiheFramework.Modules.Blackboard.Contracts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

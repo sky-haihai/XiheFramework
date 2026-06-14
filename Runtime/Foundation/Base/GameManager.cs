@@ -62,11 +62,11 @@ namespace XiheFramework.Runtime.Base {
             }
         }
 
+        public static GameManager Current => Instance;
         public static string GameName => Instance != null ? Instance.m_GameName : string.Empty;
 
         private void Awake() {
             m_Instance = this;
-            Game.Manager = this;
 
             m_GameModuleRoot = new GameObject("GameModules(Instantiated)").transform;
             m_GameModuleRoot.SetParent(transform, false);

@@ -1,4 +1,5 @@
 using System;
+using XiheFramework.Runtime.Base;
 using XiheFramework.Runtime.Event;
 using XiheFramework.Runtime.Utility.DataStructure;
 
@@ -18,7 +19,7 @@ namespace XiheFramework.Runtime.FSM {
 
         internal void OnEnterInternal() {
             OnEnterCallback();
-            Game.GetModule<IXiheEventModule>().Invoke(FsmEvents.OnStateEnterEventName, new FsmEvents.OnStateEnteredEventArgs(parentStateMachine.FsmName, m_StateName));
+            GameManager.GetModule<IXiheEventModule>().Invoke(FsmEvents.OnStateEnterEventName, new FsmEvents.OnStateEnteredEventArgs(parentStateMachine.FsmName, m_StateName));
         }
 
         internal void OnUpdateInternal() {
@@ -32,7 +33,7 @@ namespace XiheFramework.Runtime.FSM {
 
             m_EventHandlerIds.Clear();
             OnExitCallback();
-            Game.GetModule<IXiheEventModule>().Invoke(FsmEvents.OnStateExitEventName, new FsmEvents.OnStateExitedEventArgs(parentStateMachine.FsmName, m_StateName));
+            GameManager.GetModule<IXiheEventModule>().Invoke(FsmEvents.OnStateExitEventName, new FsmEvents.OnStateExitedEventArgs(parentStateMachine.FsmName, m_StateName));
         }
 
         protected abstract void OnEnterCallback();
@@ -44,7 +45,7 @@ namespace XiheFramework.Runtime.FSM {
         }
 
         protected void SubscribeEvent(string eventName, EventHandler<object> eventHandler) {
-            var handlerId = Game.GetModule<IXiheEventModule>().Subscribe(eventName, eventHandler);
+            var handlerId = GameManager.GetModule<IXiheEventModule>().Subscribe(eventName, eventHandler);
             m_EventHandlerIds.Add(eventName, handlerId);
         }
 
@@ -53,7 +54,7 @@ namespace XiheFramework.Runtime.FSM {
                 return;
             }
 
-            var eventModule = Game.GetModule<IXiheEventModule>();
+            var eventModule = GameManager.GetModule<IXiheEventModule>();
             foreach (var handlerId in handlerIds) {
                 eventModule.Unsubscribe(eventName, handlerId);
             }

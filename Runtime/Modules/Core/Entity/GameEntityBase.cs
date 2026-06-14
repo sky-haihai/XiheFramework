@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using XiheFramework.Runtime.Base;
 using XiheFramework.Runtime.Event;
 using XiheFramework.Runtime.LogicTime;
 using XiheFramework.Runtime.Utility.DataStructure;
@@ -52,7 +53,7 @@ namespace XiheFramework.Runtime.Entity {
 
         internal void OnInitCallbackInternal() {
             TimeScale = 1;
-            var logicTimeModule = Game.GetModule<IXiheLogicTimeModule>();
+            var logicTimeModule = GameManager.GetModule<IXiheLogicTimeModule>();
             SubscribeEvent(logicTimeModule.OnSetGlobalTimeScaleEventName, OnSetGlobalTimeScale);
             SubscribeEvent(EntityModuleEvents.OnEntityInstantiatedEventName, OnEntityInstantiated);
             OnInitCallback();
@@ -91,7 +92,7 @@ namespace XiheFramework.Runtime.Entity {
         }
 
         public void DestroyEntity() {
-            Game.GetModule<IXiheEntityModule>().DestroyEntity(EntityId);
+            GameManager.GetModule<IXiheEntityModule>().DestroyEntity(EntityId);
         }
 
         /// <summary>
@@ -100,14 +101,14 @@ namespace XiheFramework.Runtime.Entity {
         /// <param name="eventName"></param>
         /// <param name="eventHandler"></param>
         protected void SubscribeEvent(string eventName, EventHandler<object> eventHandler) {
-            var handlerId = Game.GetModule<IXiheEventModule>().Subscribe(eventName, eventHandler);
+            var handlerId = GameManager.GetModule<IXiheEventModule>().Subscribe(eventName, eventHandler);
             m_EventHandlerIds.Add(eventName, handlerId);
         }
 
         private void UnsubscribeEvent(string eventName) {
             if (m_EventHandlerIds.TryGetValue(eventName, out var handlerIds)) {
                 foreach (var handlerId in handlerIds) {
-                    Game.GetModule<IXiheEventModule>().Unsubscribe(eventName, handlerId);
+                    GameManager.GetModule<IXiheEventModule>().Unsubscribe(eventName, handlerId);
                 }
             }
         }
@@ -121,12 +122,12 @@ namespace XiheFramework.Runtime.Entity {
 
         private void Start() {
             if (EntityId == 0) {
-                Game.GetModule<IXiheEntityModule>().RegisterEntity(this, presetEntityId, false, presetOwnerId);
+                GameManager.GetModule<IXiheEntityModule>().RegisterEntity(this, presetEntityId, false, presetOwnerId);
             }
         }
 
         private void OnDestroy() {
-            Game.GetModule<IXiheEntityModule>().UnregisterEntity(EntityId);
+            GameManager.GetModule<IXiheEntityModule>().UnregisterEntity(EntityId);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace XiheFramework.Runtime.Entity {
                 return null;
             }
 
-            var go = Game.GetModule<IXiheResourceModule>().InstantiateAsset<GameObject>(entityAddress);
+            var go = GameManager.GetModule<IXiheResourceModule>().InstantiateAsset<GameObject>(entityAddress);
             if (go == null) {
                 // Debug.LogError("[ENTITY] Entity Instantiation Failed : " + entityAddress + " does not exist or is not a GameObject");
                 return null;
@@ -55,7 +55,7 @@ namespace XiheFramework.Runtime.Entity {
                 return;
             }
 
-            Game.GetModule<IXiheResourceModule>().InstantiateAssetAsync<GameObject>(entityAddress, go => {
+            GameManager.GetModule<IXiheResourceModule>().InstantiateAssetAsync<GameObject>(entityAddress, go => {
                 if (go == null) {
                     Debug.LogError("[ENTITY] Entity Instantiation Failed : " + entityAddress + " is not a GameObject");
                     return;
@@ -124,7 +124,7 @@ namespace XiheFramework.Runtime.Entity {
 
                 var args = new EntityModuleEvents.OnEntityDestroyedEventArgs(entityId, entity.GetType(), entity.EntityAddress, entity.gameObject.name, entity.transform.position,
                     entity.transform.rotation);
-                Game.GetModule<IXiheEventModule>().InvokeNow(EntityModuleEvents.OnEntityDestroyedEventName, args);
+                GameManager.GetModule<IXiheEventModule>().InvokeNow(EntityModuleEvents.OnEntityDestroyedEventName, args);
                 m_Entities.Remove(entityId);
                 m_RecycledEntityIds.Remove(entityId); // release recycled id if exist
                 entity.EntityId = 0;
@@ -259,7 +259,7 @@ namespace XiheFramework.Runtime.Entity {
             var args = new EntityModuleEvents.OnEntityInstantiatedEventArgs(finalId, entity.EntityAddress, entity.gameObject.name);
 
             entity.OnInitCallbackInternal();
-            Game.GetModule<IXiheEventModule>().Invoke(EntityModuleEvents.OnEntityInstantiatedEventName, args);
+            GameManager.GetModule<IXiheEventModule>().Invoke(EntityModuleEvents.OnEntityInstantiatedEventName, args);
         }
 
         #endregion

@@ -12,14 +12,14 @@ namespace XiheFramework.Runtime.Serialization {
 
             var args = new OnSaveEventArgs();
             args.timeStamp = DateTime.Now;
-            Game.GetModule<IXiheEventModule>().InvokeNow(OnSaveEventName, args);
+            GameManager.GetModule<IXiheEventModule>().InvokeNow(OnSaveEventName, args);
         }
 
         public void LoadGame() {
             OnLoadCallback();
 
             var args = new OnLoadEventArgs();
-            Game.GetModule<IXiheEventModule>().InvokeNow(OnLoadEventName, args);
+            GameManager.GetModule<IXiheEventModule>().InvokeNow(OnLoadEventName, args);
         }
 
         protected override void OnInstantiated() {

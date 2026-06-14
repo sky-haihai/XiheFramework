@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using XiheFramework.Runtime;
+using XiheFramework.Runtime.Base;
 using XiheFramework.Runtime.FSM;
 using XiheFramework.Runtime.Utility.DataStructure;
 
@@ -32,7 +33,7 @@ namespace XiheFramework.Editor.Runtime.Fsm {
                 return;
             }
 
-            if (!Game.TryGetModule<IXiheStateMachineModule>(out var fsmModule)) {
+            if (!GameManager.TryGetModule<IXiheStateMachineModule>(out var fsmModule)) {
                 GUILayout.Label("DATA STATUS : MISSING XIHE FRAMEWORK", EditorStyles.boldLabel);
                 return;
             }

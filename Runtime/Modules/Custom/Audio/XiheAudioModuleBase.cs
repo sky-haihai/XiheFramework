@@ -9,7 +9,7 @@ namespace XiheFramework.Runtime.Audio {
                 return audioModule;
             }
 
-            Game.LogError($"[AUDIO] Current Audio Module is not a {typeof(T).Name}. Actual type is {GetType().Name}");
+            UnityEngine.Debug.LogError($"[AUDIO] Current Audio Module is not a {typeof(T).Name}. Actual type is {GetType().Name}");
             return null;
         }
     }

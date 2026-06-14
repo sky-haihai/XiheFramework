@@ -2,7 +2,8 @@
     "name": "XiheFramework.Modules.Event",
     "rootNamespace": "",
     "references": [
-        "XiheFramework.Core"
+        "XiheFramework.Core",
+        "XiheFramework.Modules.Event.Contracts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

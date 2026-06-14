@@ -34,7 +34,7 @@ namespace XiheFramework.Runtime.LogicTime {
             GlobalTimeScale = timeScale;
             m_Duration = duration;
             var args = new OnSetGlobalTimeScaleEventArgs(timeScale, oldTimeScale, duration);
-            Game.GetModule<IXiheEventModule>().Invoke(onSetGlobalTimeScaleEventName, args);
+            GameManager.GetModule<IXiheEventModule>().Invoke(onSetGlobalTimeScaleEventName, args);
             if (alsoSetUnityTimeScale) {
                 Time.timeScale = timeScale;
             }
@@ -64,7 +64,7 @@ namespace XiheFramework.Runtime.LogicTime {
             GlobalTimeScale = defaultTimeScale;
             Shader.SetGlobalFloat(TimeScalePropertyID, defaultTimeScale);
             Time.timeScale = defaultTimeScale;
-            Game.GetModule<IXiheEventModule>().Invoke(onSetGlobalTimeScaleEventName, defaultTimeScale);
+            GameManager.GetModule<IXiheEventModule>().Invoke(onSetGlobalTimeScaleEventName, defaultTimeScale);
             m_Duration = 0;
             m_Timer = 0;
         }
