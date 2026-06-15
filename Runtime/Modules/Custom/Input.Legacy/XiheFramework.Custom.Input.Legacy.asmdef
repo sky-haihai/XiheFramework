@@ -2,7 +2,7 @@
     "name": "XiheFramework.Custom.Input.Legacy",
     "rootNamespace": "",
     "references": [
-        "XiheFramework.Core"
+        "XiheFramework.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

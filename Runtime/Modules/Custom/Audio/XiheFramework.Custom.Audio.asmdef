@@ -2,7 +2,7 @@
     "name": "XiheFramework.Custom.Audio",
     "rootNamespace": "",
     "references": [
-        "XiheFramework.Core"
+        "XiheFramework.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

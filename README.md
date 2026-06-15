@@ -1,8 +1,8 @@
 # XiheFramework
 
-XiheFramework is a modular Unity runtime framework. It is built around a small foundation layer, replaceable core modules, project-owned custom modules, explicit assembly definitions, and archived legacy code that is kept out of compilation.
+XiheFramework is a modular Unity runtime framework. It is built around one public runtime assembly, replaceable core modules, project-owned custom modules, explicit assembly definitions for optional adapters, and archived legacy code that is kept out of compilation.
 
-The current design favors clear framework boundaries over broad static convenience APIs. Projects should depend on module interfaces such as `IXiheEventModule` and `IXiheEntityModule`, then choose concrete implementations from `GameManager`.
+Project code should reference `XiheFramework.Runtime` and use `Game.Event`, `Game.Resource`, `Game.Scene`, `Game.Entity`, and other `Game.xxx` entry points for core framework capabilities. Projects do not need to reference individual core module assemblies.
 
 ## Add to Unity Project
 
@@ -93,14 +93,14 @@ Assets/XiheFramework
 
 ## Assembly Rules
 
-Every active framework area has an `.asmdef`. Do not put new framework runtime code into `Assembly-CSharp`.
+Framework runtime code is compiled by asmdef and must not fall into `Assembly-CSharp`.
 
 Assembly rules:
 
+- `XiheFramework.Runtime` is the public runtime assembly and owns `Game`, `GameManager`, `GameModuleBase`, `GameEntityBase`, core module contracts, core module implementations, startup order, module registration, and shared runtime utilities.
 - `Runtime/Foundation` contains the framework foundation layer.
-- `XiheFramework.Core` is the foundation assembly and owns `Game`, `GameManager`, `GameModuleBase`, startup order, module registration, and shared base data structures.
-- `Runtime/Modules/Core` contains the core module set created by `GameManager`.
-- Each core module owns its own interface and implementation in the same module folder.
+- `Runtime/Modules/Core` contains the core module set created by `GameManager`; these modules compile into `XiheFramework.Runtime`.
+- `Runtime/Modules/Custom` contains optional framework-provided adapters. They may keep their own asmdef and reference `XiheFramework.Runtime`.
 - Public module interfaces and module classes use the `Xihe` prefix: `IXiheEventModule`, `XiheEventModule`, `IXiheEntityModule`, `XiheEntityModule`.
 - Project-specific modules should live in project assemblies, not inside `Assets/XiheFramework`, unless they are intended to become reusable framework modules.
 - Runtime assemblies must not reference `UnityEditor`.
@@ -160,26 +160,24 @@ Custom modules are still prefab-based because they are project-specific or expli
 
 ## Accessing Modules
 
-Use `Game.GetModule<T>()` for required modules:
+Use `Game.xxx` for built-in core framework capabilities:
 
 ```csharp
 using XiheFramework.Runtime;
-using XiheFramework.Runtime.Entity;
-using XiheFramework.Runtime.Event;
+using UnityEngine;
 
-var entityModule = Game.GetModule<IXiheEntityModule>();
-var eventModule = Game.GetModule<IXiheEventModule>();
+Game.Event.Invoke("Battle.Started");
+Game.Entity.DestroyEntity(entityId);
+Game.Resource.LoadAssetAsync<GameObject>(address, OnLoaded);
 ```
 
-Use `Game.TryGetModule<T>(out var module)` when a module may be disabled or project-specific:
+Use `Game.GetModule<T>()` for required project-specific or replacement modules, and `Game.TryGetModule<T>(out var module)` when a module may be disabled or project-specific:
 
 ```csharp
 if (Game.TryGetModule<XiheInputModule>(out var inputModule)) {
     // Read input through the custom input module.
 }
 ```
-
-The old broad facade style such as `Game.UI`, `Game.Entity`, `Game.Resource`, and `Game.Event` is not part of the active API. If a project wants typed convenience accessors, create them in the project layer, for example `ThisGameUI` or `ThisGameCombat`, rather than expanding framework Core.
 
 ## Creating A Custom Core Implementation
 
@@ -225,7 +223,7 @@ public sealed class ProjectCombatModule : GameModuleBase {
 }
 ```
 
-Add the component to a prefab, then assign that prefab to `GameManager`. If other project assemblies need stable access, expose a project-owned interface or typed facade in the project assembly.
+Add the component to a prefab, then assign that prefab to `GameManager`. If other project assemblies need stable access, expose a project-owned interface or typed accessor in the project assembly.
 
 ## Resource And Scene Loading
 
@@ -325,7 +323,7 @@ After conversion, run `XiheFramework/Resource/Mark All Addressable` if the gener
 For each project using XiheFramework:
 
 1. Keep `Assets/XiheFramework` as framework code. Put project gameplay code under `Assets/Scripts` or another project-owned folder.
-2. Create project `.asmdef` files and reference only the Xihe assemblies that are actually needed.
+2. Create project `.asmdef` files and reference `XiheFramework.Runtime` for core framework APIs.
 3. Import only the third-party packages the project actually uses.
 4. Open `XiheFramework/Setup Wizard` and enable only the symbols for packages already installed in this project.
 5. If the project uses Addressables, put runtime assets under `Assets/AddressableResources`, then run `XiheFramework/Resource/Mark All Addressable`.
@@ -333,8 +331,9 @@ For each project using XiheFramework:
 7. Keep `Auto Create Core Modules` enabled unless the project has a specific bootstrap reason not to.
 8. Choose core module implementations from the `GameManager` dropdowns.
 9. Add custom module prefabs to `Custom Game Module Prefabs`.
-10. Access modules through `Game.GetModule<T>()` or `Game.TryGetModule<T>()`.
-11. Keep project typed facades in project assemblies, not in `XiheFramework.Core`.
+10. Access built-in core capabilities through `Game.Event`, `Game.Entity`, `Game.Resource`, `Game.Scene`, `Game.UI`, and related `Game.xxx` entries.
+11. Access custom or project-specific modules through `Game.GetModule<T>()` or `Game.TryGetModule<T>()`.
+12. Keep project typed accessors in project assemblies, not in `XiheFramework.Runtime`.
 
 ## Naming Conventions
 

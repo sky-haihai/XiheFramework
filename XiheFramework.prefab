@@ -81,44 +81,44 @@ MonoBehaviour:
   m_AutoCreateCoreModules: 1
   m_CoreModules:
   - enabled: 1
-    contractTypeName: XiheFramework.Runtime.Blackboard.IXiheBlackboardModule, XiheFramework.Modules.Blackboard,
+    contractTypeName: XiheFramework.Runtime.Blackboard.IXiheBlackboardModule, XiheFramework.Runtime,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     implementationTypeName: XiheFramework.Runtime.Blackboard.XiheBlackboardModule,
-      XiheFramework.Modules.Blackboard, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      XiheFramework.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   - enabled: 1
-    contractTypeName: XiheFramework.Runtime.Entity.IXiheEntityModule, XiheFramework.Modules.Entity,
+    contractTypeName: XiheFramework.Runtime.Entity.IXiheEntityModule, XiheFramework.Runtime,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    implementationTypeName: XiheFramework.Runtime.Entity.XiheEntityModule, XiheFramework.Modules.Entity,
+    implementationTypeName: XiheFramework.Runtime.Entity.XiheEntityModule, XiheFramework.Runtime,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   - enabled: 1
-    contractTypeName: XiheFramework.Runtime.LogicTime.IXiheLogicTimeModule, XiheFramework.Modules.LogicTime,
+    contractTypeName: XiheFramework.Runtime.LogicTime.IXiheLogicTimeModule, XiheFramework.Runtime,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     implementationTypeName: XiheFramework.Runtime.LogicTime.XiheLogicTimeModule,
-      XiheFramework.Modules.LogicTime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      XiheFramework.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   - enabled: 1
-    contractTypeName: XiheFramework.Runtime.Resource.IXiheResourceModule, XiheFramework.Modules.Resource,
+    contractTypeName: XiheFramework.Runtime.Resource.IXiheResourceModule, XiheFramework.Runtime,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    implementationTypeName: XiheFramework.Runtime.Resource.XiheResourceModule, XiheFramework.Modules.Resource,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - enabled: 1
-    contractTypeName: XiheFramework.Runtime.Scene.IXiheSceneModule, XiheFramework.Modules.Scene,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    implementationTypeName: XiheFramework.Runtime.Scene.XiheSceneModule, XiheFramework.Modules.Scene,
+    implementationTypeName: XiheFramework.Runtime.Resource.XiheResourceModule, XiheFramework.Runtime,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   - enabled: 1
-    contractTypeName: XiheFramework.Runtime.FSM.IXiheStateMachineModule, XiheFramework.Modules.Fsm,
+    contractTypeName: XiheFramework.Runtime.Scene.IXiheSceneModule, XiheFramework.Runtime,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    implementationTypeName: XiheFramework.Runtime.FSM.XiheStateMachineModule, XiheFramework.Modules.Fsm,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - enabled: 1
-    contractTypeName: XiheFramework.Runtime.UI.IXiheUIModule, XiheFramework.Modules.UI,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    implementationTypeName: XiheFramework.Runtime.UI.XiheUIModule, XiheFramework.Modules.UI,
+    implementationTypeName: XiheFramework.Runtime.Scene.XiheSceneModule, XiheFramework.Runtime,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   - enabled: 1
-    contractTypeName: XiheFramework.Runtime.Event.IXiheEventModule, XiheFramework.Modules.Event,
+    contractTypeName: XiheFramework.Runtime.FSM.IXiheStateMachineModule, XiheFramework.Runtime,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    implementationTypeName: XiheFramework.Runtime.Event.XiheEventModule, XiheFramework.Modules.Event,
+    implementationTypeName: XiheFramework.Runtime.FSM.XiheStateMachineModule, XiheFramework.Runtime,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - enabled: 1
+    contractTypeName: XiheFramework.Runtime.UI.IXiheUIModule, XiheFramework.Runtime,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    implementationTypeName: XiheFramework.Runtime.UI.XiheUIModule, XiheFramework.Runtime,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - enabled: 1
+    contractTypeName: XiheFramework.Runtime.Event.IXiheEventModule, XiheFramework.Runtime,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    implementationTypeName: XiheFramework.Runtime.Event.XiheEventModule, XiheFramework.Runtime,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   m_CustomGameModulePrefabs:
   - {fileID: 3116445981691434761, guid: 496bf18c35a16054b8346b865b45a4b7, type: 3}

@@ -2,7 +2,7 @@
     "name": "XiheFramework.Editor.Core",
     "rootNamespace": "",
     "references": [
-        "XiheFramework.Core"
+        "XiheFramework.Runtime"
     ],
     "includePlatforms": [
         "Editor"

@@ -2,11 +2,7 @@
     "name": "XiheFramework.Editor.Modules",
     "rootNamespace": "",
     "references": [
-        "XiheFramework.Core",
-        "XiheFramework.Modules.Event",
-        "XiheFramework.Modules.Fsm",
-        "XiheFramework.Modules.Entity",
-        "XiheFramework.Modules.UI"
+        "XiheFramework.Runtime"
     ],
     "includePlatforms": [
         "Editor"
